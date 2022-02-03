@@ -1,10 +1,10 @@
 /**
-* file:     Driver_lab2.java
+* file:     Driver_lab2a.java
 * author:   John Craig
 * course:   MSCS 630
 * assignment: Lab 2
 * due date: January 29, 2022
-* verison: 1.0
+* version: 1.0
 *
 * This file contains the source code for the first
 * lab assignment.
@@ -55,7 +55,7 @@ public class Driver_lab2a {
     /* Returns an array of two longs parsed from a string containing
        space-separated integers */
     public static long[] parseLine(line) throws IllegalArgumentException {
-        String splitLine = line.split(' ');
+        String[] splitLine = line.split(' ');
         long[] digits;
 
         try {

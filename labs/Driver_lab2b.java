@@ -1,5 +1,5 @@
 /**
-* file:     Driver_lab2.java
+* file:     Driver_lab2b.java
 * author:   John Craig
 * course:   MSCS 630
 * assignment: Lab 2
@@ -57,7 +57,7 @@ public class Driver_lab2b {
     /* Returns an array of two longs parsed from a string containing
        space-separated integers */
     public static long[] parseLine(line) throws IllegalArgumentException {
-        String splitLine = line.split(' ');
+        String[] splitLine = line.split(' ');
         long[] digits;
 
         try {
