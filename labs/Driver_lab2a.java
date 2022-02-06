@@ -35,7 +35,7 @@ public class Driver_lab2a {
     public static void printResults(String lines[]){
         //Declare working variables
         long[] digits;
-        long denominator = "";
+        long denominator;
 
         //Iterate over lines
         for(int i=0;i<lines.length;i++){
@@ -46,7 +46,7 @@ public class Driver_lab2a {
 
             //Print output
             System.out.println(
-                denominator.toString()
+                String.format("%d", denominator)
             );
         }
     }
@@ -54,24 +54,24 @@ public class Driver_lab2a {
 
     /* Returns an array of two longs parsed from a string containing
        space-separated integers */
-    public static long[] parseLine(line) throws IllegalArgumentException {
-        String[] splitLine = line.split(' ');
-        long[] digits;
+    public static long[] parseLine(String line) throws IllegalArgumentException {
+        String[] splitLines = line.split(" ");
+        long[] digits = {};
 
         try {
             if(splitLines.length != MAX_NUMBERS){
                 throw new IllegalArgumentException("Each line must contain exactly two numbers.");
             } else {
-                digits = new int[2];
+                digits = new long[2];
                 
-                digits[0] = Long.parseLong(splitLine[0]);
-                digits[1] = Long.parseLong(splitLine[1]);
+                digits[0] = Long.parseLong(splitLines[0]);
+                digits[1] = Long.parseLong(splitLines[1]);
             }
         } catch (IllegalArgumentException e){
             System.exit(0);
-        } catch (NumberFormatException e){
-            System.exit(0);
         }
+
+        return digits;
     }
 
     /* Returns the greatest common denominator of the two digits,

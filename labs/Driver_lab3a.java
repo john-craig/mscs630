@@ -1,5 +1,5 @@
 /**
-* file:     Driver_lab3b.java
+* file:     Driver_lab3a.java
 * author:   John Craig
 * course:   MSCS 630
 * assignment: Lab 3
@@ -15,7 +15,7 @@
 *
 * This class contains a program which converts one or more lines of text into integers.
 */
-public class Driver_lab3b {
+public class Driver_lab3a {
     //Declare constants for input
     static final int MAX_NUMBERS_FIRST_LINE = 2;
 
@@ -24,23 +24,23 @@ public class Driver_lab3b {
     public static void main(String args[]) {
         int numLines = args.length;
 
-        int[] modulusAndSize = parseFirstLine(0);
+        int[] modulusAndSize = parseFirstLine(args[0]);
         int[][] A = parseRemainingLines(args, modulusAndSize[1]);
 
-        int determinant = cofModDet(A, modulusAndSize[0]);
+        int determinant = cofModDet(modulusAndSize[0], A);
 
-        System.out.println("%d", determinant);
+        System.out.println(String.format("%d", determinant));
     }
 
     /* Returns the modulus 'm' and matrix size of 'A' as a two-element integer
        array parsed from a string. Throws an error if the values are not found
        correctly */
     public static int[] parseFirstLine(String line) throws IllegalArgumentException {
-        String[] splitLine = line.split(' ');
-        int[] digits;
+        String[] splitLine = line.split(" ");
+        int[] digits = {};
 
         try {
-            if(splitLines.length != MAX_NUMBERS_FIRST_LINE){
+            if(splitLine.length != MAX_NUMBERS_FIRST_LINE){
                 throw new IllegalArgumentException("The first line must contain exactly two numbers.");
             } else {
                 digits = new int[2];
@@ -49,8 +49,6 @@ public class Driver_lab3b {
                 digits[1] = Integer.parseInt(splitLine[1]);
             }
         } catch (IllegalArgumentException e){
-            System.exit(0);
-        } catch (NumberFormatException e){
             System.exit(0);
         }
 
@@ -63,16 +61,20 @@ public class Driver_lab3b {
         int[][] matrix = new int[size][size];
 
         try {
-            if(lines.size - 1 != size){
-                throw new IllegalArgumentException("There must be %d lines of input following the first.", size);
+            if(lines.length-1 != size){
+                throw new IllegalArgumentException(
+                    String.format("There must be %d lines of input following the first.", size)
+                );
             } else {
                 String[] splitLine;
 
                 for(int i=1;i<size;i++){
-                    splitLine = lines[i].split(' ');
+                    splitLine = lines[i].split(" ");
 
                     if(splitLine.length != size){
-                        throw new IllegalArgumentException("Each line must contain %d numbers.", size);
+                        throw new IllegalArgumentException(
+                            String.format("Each line must contain %d numbers.", size)
+                        );
                     } else {
                         for(int j=0;j<size;j++){
                             matrix[i-1][j] = Integer.parseInt(splitLine[j]);
@@ -82,19 +84,17 @@ public class Driver_lab3b {
             }
         } catch (IllegalArgumentException e){
             System.exit(0);
-        } catch (NumberFormatException e){
-            System.exit(0);
         }
 
         return matrix;
     }
 
-"""
+/*
     Again, we could have been working (mod 9) throughout all intermediate calculations
     and would have obtained the same result.
 
         -Footnote on pg. 160, Stanoyevitch
-"""
+*/
 
     /* Returns the determinant of the square matrix
        'A' under modulo 'm' */
@@ -102,7 +102,7 @@ public class Driver_lab3b {
         return matrixDet(A) % m;
     }
 
-"""
+/*
  1. For n=1, 
         det(A) is A[0][0], since A=[a].
 
@@ -112,10 +112,12 @@ public class Driver_lab3b {
  3. For n>=3, 
         det(A) = (A[0][0] * det(A[0:][0:])) - (A[0][1] * det(A[0:][0,2:])) + 
                  (A[0][2] * det(A[0:][1,3:])) - ... + ((-1)^(n) * A[0][n-1] * det(A[0][:n-1])
-"""
+*/
 
     /* Returns the determinant of the square matrix 'A' */
     public static int matrixDet(int[][] A){
+        int determinant = 0;
+
         //Base cases
         if(A.length == 1)
         {
@@ -125,12 +127,12 @@ public class Driver_lab3b {
             return (A[0][0] * A[1][1]) - (A[0][1] * A[1][0]);
         } else //Recursive case
         {
-            int determinant = 0;
-
             for(int j=0;j<A.length;j++){
-                determinant += A[0][j] * matrixDet(submatrix(A,0,j)) * (-1 * (i % 2));
+                determinant += A[0][j] * matrixDet(submatrix(A,0,j)) * (-1 * (j % 2));
             }
         }
+
+        return determinant;
     }
 
     /* Returns a submatrix of the matrix 'A' with the specified
