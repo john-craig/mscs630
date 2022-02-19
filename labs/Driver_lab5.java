@@ -1,3 +1,4 @@
+import java.util.Arrays;
 /**
 * file:     Driver_lab5.java
 * author:   John Craig
@@ -19,71 +20,58 @@ public class Driver_lab5 {
     static final int MAX_PLAINTEXT_LENGTH = 16;
     static final int MATRIX_SIZE = 4;
 
-    /* Main method of the program; accepts lines of text as input and prints
-       each line with the characters converted to integers */
+    /*  */
     public static void main(String args[]) {
-        char padding = args[0].charAt(0);
-        String plaintext = args[1];
-        int[][] hexMatrix = {};
+        // Scanner s = new Scanner(System.in);
+        // String sysKey = s.next();
+        // String plaintText = s.next();
+
+        // AESCipher cipher = new AESCipher();
+
+        // int[] keyHex = cipher.str2hex(sysKey);
+        // int[] pTextHex = cipher.str2hex(plaintText);
+
+        // int[] cTextHex = cipher.AES(keyHex, pTextHex);
+        // String cText = cipher.hex2str(cTextHex);
+
+        // System.out.println(cText);
+        runTests();
+    }
+
+    public static void runTests(){
+        AESCipher cipher = new AESCipher();
+
+        int[][] addKey1 = {
+            {0x54, 0x4F, 0x4E, 0x20},
+            {0x77, 0x6E, 0x69, 0x54},
+            {0x6F, 0x65, 0x6E, 0x77},
+            {0x20, 0x20, 0x65, 0x6F}
+        };
+        int[][] addKey2 = {
+            {0x54, 0x73, 0x20, 0x67},
+            {0x68, 0x20, 0x4B, 0x20},
+            {0x61, 0x6D, 0x75, 0x46},
+            {0x74, 0x79, 0x6E, 0x75}
+        };
+
+        int[][] nibSub = cipher.AESStateXOR(addKey1, addKey2);
         
-        //Determine the number of iterations based on the length of the plaintext
-        int iterations = (plaintext.length()/MAX_PLAINTEXT_LENGTH) + (plaintext.length() % MAX_PLAINTEXT_LENGTH) == 0 ? 0 : 1;
+        int[][] shiftRows = cipher.AESNibbleSub(nibSub);
 
-        //Iterate over the plaintext
-        for(int i=0; i< iterations; i++){
-            //Get the hexmatric of the substring
-            hexMatrix = getHexMatP(
-                padding,
-                //Determine whether the second index of the substring should end at the next sixteen-byte offset
-                //or at the end of the plaintext string
-                plaintext.substring(
-                    i*MAX_PLAINTEXT_LENGTH,
-                    (i+1 * MAX_PLAINTEXT_LENGTH <= plaintext.length()-1) ? i+1 * MAX_PLAINTEXT_LENGTH : plaintext.length()-1
-                )
-            );
+        int[][] mixCol = cipher.AESShiftRow(shiftRows);
 
-            prntHexMat(hexMatrix);
-        }
+        int[][] last = cipher.AESMixColumn(mixCol);
+        printHex(last);
+
     }
 
-
-    public static void prntHexMat(int[][] hexMatrix){
-        for(int i=0;i<MATRIX_SIZE;i++){
-            System.out.println(
-                String.format("%x", hexMatrix[i][0]) + " " + 
-                String.format("%x", hexMatrix[i][1]) + " " +
-                String.format("%x", hexMatrix[i][2]) + " " + 
-                String.format("%x", hexMatrix[i][3])
-            );
-        }
-    }
-
-    public static int[][] getHexMatP(char s, String p) throws IllegalArgumentException {
-        int[][] hexMatrix = {};
-
-        try {
-            if(p.length() > MAX_PLAINTEXT_LENGTH){
-                throw new IllegalArgumentException("Plaintext strings must be less than or equal to sixteen bytes.");
-            } else {
-                hexMatrix = new int[MATRIX_SIZE][MATRIX_SIZE];
-                int curPos;
-
-                for(int j=0;j<MATRIX_SIZE;j++){
-                    for(int i=0;i<MATRIX_SIZE;i++){
-                        curPos = (MATRIX_SIZE * i) + j;
-
-                        if(curPos > p.length() - 1){
-                            hexMatrix[j][i] = s;
-                        } else {
-                            hexMatrix[j][i] = p.charAt(curPos);
-                        }
-                    }
-                }
+    public static void printHex(int[][] hexMat){
+        for(int i=0;i<hexMat.length;i++){
+            for (int j=0;j<hexMat[0].length;j++){
+                System.out.print(String.format("%X ", hexMat[i][j]));
             }
-        } catch (IllegalArgumentException e){
-            System.exit(0);
-        } 
-
-        return hexMatrix;
+            System.out.println("");
+        }
     }
+
 }
