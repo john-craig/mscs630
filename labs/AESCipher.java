@@ -70,14 +70,16 @@ public class AESCipher {
         return outStateHex;
     }
 
-    public static int[] AES(int[] pTextHex, int[] keyHex){
+    public static int[] AES(int[] keyHex, int[] pTextHex){
         int[][] keyMatrix = new int[4][4];
         int[][] cTextMatrix = new int[4][4];
 
         //Transpose 1-dimensional arrays into 4 x 4 matrices
         for(int i=0;i<keyHex.length;i++){
-            keyMatrix[i/4][i%4] = keyHex[i];
-            cTextMatrix[i/4][i%4] = pTextHex[i];
+            //keyMatrix[i/4][i%4] = keyHex[i];
+            //cTextMatrix[i/4][i%4] = pTextHex[i];
+            keyMatrix[i%4][i/4] = keyHex[i];
+            cTextMatrix[i%4][i/4] = pTextHex[i];
         }
 
         //Generate the RoundKeys Array
@@ -86,17 +88,22 @@ public class AESCipher {
         int round = 1;
         int[][] roundKeyMatrix = AESGetRoundKey(AESRoundKeys, round);
 
+        // printHex(roundKeyMatrix);
+        // System.out.println("---");
+        printHex(AESRoundKeys);
+
         //First round
         cTextMatrix = AESStateXOR(cTextMatrix, roundKeyMatrix);
 
         //Rounds 2 through 10
         for(round=2;round<=10;round++){
-            roundKeyMatrix = AESGetRoundKey(AESRoundKeys, round);
-
             cTextMatrix = AESNibbleSub(cTextMatrix);
             cTextMatrix = AESShiftRow(cTextMatrix);
             cTextMatrix = AESMixColumn(cTextMatrix);
 
+            roundKeyMatrix = AESGetRoundKey(AESRoundKeys, round);
+            // printHex(roundKeyMatrix);
+            // System.out.println("---");
             cTextMatrix = AESStateXOR(cTextMatrix, roundKeyMatrix);
         }
 
@@ -113,7 +120,7 @@ public class AESCipher {
         
         for(int i=0;i<cTextMatrix.length;i++){
             for(int j=0;j<cTextMatrix[0].length;j++){
-                cTextHex[(i*4)+j] = cTextMatrix[i][j];
+                cTextHex[(j*4)+i] = cTextMatrix[i][j];
             }
         }
 
@@ -131,10 +138,10 @@ public class AESCipher {
             keyMatrix[i] = str2hex(keyHex.substring(i*8,(i*8)+8));
             keyRow = str2hex(keyHex.substring(i*8,(i*8)+8));
 
-            keyMatrix[i][0] = keyRow[0];
-            keyMatrix[i][1] = keyRow[1];
-            keyMatrix[i][2] = keyRow[2];
-            keyMatrix[i][3] = keyRow[3];
+            keyMatrix[0][i] = keyRow[0];
+            keyMatrix[1][i] = keyRow[1];
+            keyMatrix[2][i] = keyRow[2];
+            keyMatrix[3][i] = keyRow[3];
         }
         
         workMatrix = AESRoundKeysMatrix(keyMatrix);
@@ -153,11 +160,11 @@ public class AESCipher {
     // Returns a 4 x 4 matrix for the current round, where 1 <= round <= 11
     public static int[][] AESGetRoundKey(int[][] AESRoundKeysMatrix, int round){
         int[][] keyMatrix = new int[4][4];
-        int startIndex = round * 4;
+        int startIndex = (round - 1) * 4;
 
         for(int i=0;i<4;i++){
             for(int j=0;j<4;j++){
-                keyMatrix[i][j] = AESRoundKeysMatrix[i+startIndex][j];
+                keyMatrix[i][j] = AESRoundKeysMatrix[i][j+startIndex];
             }
         }
 
@@ -165,7 +172,7 @@ public class AESCipher {
     }
 
     public static int[][] AESRoundKeysMatrix(int[][] keyMatrix){
-        int[][] workMatrix = new int[44][4];
+        int[][] workMatrix = new int[4][44];
 
         //Round zero
         for(int k=0;k<4;k++){
@@ -181,18 +188,18 @@ public class AESCipher {
         //Remaining rounds
         for(int j=4;j<44;j++){
             if(j % 4 != 0){
-                workMatrix[j][0] = workMatrix[j-4][0] ^ workMatrix[j-1][0];
-                workMatrix[j][1] = workMatrix[j-4][1] ^ workMatrix[j-1][1];
-                workMatrix[j][2] = workMatrix[j-4][2] ^ workMatrix[j-1][2];
-                workMatrix[j][3] = workMatrix[j-4][3] ^ workMatrix[j-1][3];
+                workMatrix[0][j] = workMatrix[0][j-4] ^ workMatrix[0][j-1];
+                workMatrix[1][j] = workMatrix[1][j-4] ^ workMatrix[1][j-1];
+                workMatrix[2][j] = workMatrix[2][j-4] ^ workMatrix[2][j-1];
+                workMatrix[3][j] = workMatrix[3][j-4] ^ workMatrix[3][j-1];
             } else {
                 round = j / 4;
 
                 //Shift previous matrix column by one
-                tempMatrix[0] = workMatrix[j-1][1];
-                tempMatrix[1] = workMatrix[j-1][2];
-                tempMatrix[2] = workMatrix[j-1][3];
-                tempMatrix[3] = workMatrix[j-1][0];
+                tempMatrix[0] = workMatrix[1][j-1];
+                tempMatrix[1] = workMatrix[2][j-1];
+                tempMatrix[2] = workMatrix[3][j-1];
+                tempMatrix[3] = workMatrix[0][j-1];
 
                 //Apply sBox transformation and round constant modulation
                 tempMatrix[0] = aesBox(tempMatrix[0]) ^ aesRcon(round);
@@ -200,15 +207,61 @@ public class AESCipher {
                 tempMatrix[2] = aesBox(tempMatrix[2]); //^ aesRcon(round);
                 tempMatrix[3] = aesBox(tempMatrix[3]); //^ aesRcon(round);
 
-                workMatrix[j][0] = tempMatrix[0] ^ workMatrix[j-4][0];
-                workMatrix[j][1] = tempMatrix[1] ^ workMatrix[j-4][1];
-                workMatrix[j][2] = tempMatrix[2] ^ workMatrix[j-4][2];
-                workMatrix[j][3] = tempMatrix[3] ^ workMatrix[j-4][3];
+                workMatrix[0][j] = tempMatrix[0] ^ workMatrix[0][j-4];
+                workMatrix[1][j] = tempMatrix[1] ^ workMatrix[1][j-4];
+                workMatrix[2][j] = tempMatrix[2] ^ workMatrix[2][j-4];
+                workMatrix[3][j] = tempMatrix[3] ^ workMatrix[3][j-4];
             }
         }
 
         return workMatrix;
     }
+
+    // public static int[][] AESRoundKeysMatrix(int[][] keyMatrix){
+    //     int[][] workMatrix = new int[44][4];
+
+    //     //Round zero
+    //     for(int k=0;k<4;k++){
+    //         workMatrix[k][0] = keyMatrix[k][0];
+    //         workMatrix[k][1] = keyMatrix[k][1];
+    //         workMatrix[k][2] = keyMatrix[k][2];
+    //         workMatrix[k][3] = keyMatrix[k][3];
+    //     }
+
+    //     int[] tempMatrix = new int[4];
+    //     int round;
+
+    //     //Remaining rounds
+    //     for(int j=4;j<44;j++){
+    //         if(j % 4 != 0){
+    //             workMatrix[j][0] = workMatrix[j-4][0] ^ workMatrix[j-1][0];
+    //             workMatrix[j][1] = workMatrix[j-4][1] ^ workMatrix[j-1][1];
+    //             workMatrix[j][2] = workMatrix[j-4][2] ^ workMatrix[j-1][2];
+    //             workMatrix[j][3] = workMatrix[j-4][3] ^ workMatrix[j-1][3];
+    //         } else {
+    //             round = j / 4;
+
+    //             //Shift previous matrix column by one
+    //             tempMatrix[0] = workMatrix[j-1][1];
+    //             tempMatrix[1] = workMatrix[j-1][2];
+    //             tempMatrix[2] = workMatrix[j-1][3];
+    //             tempMatrix[3] = workMatrix[j-1][0];
+
+    //             //Apply sBox transformation and round constant modulation
+    //             tempMatrix[0] = aesBox(tempMatrix[0]) ^ aesRcon(round);
+    //             tempMatrix[1] = aesBox(tempMatrix[1]); //^ aesRcon(round);
+    //             tempMatrix[2] = aesBox(tempMatrix[2]); //^ aesRcon(round);
+    //             tempMatrix[3] = aesBox(tempMatrix[3]); //^ aesRcon(round);
+
+    //             workMatrix[j][0] = tempMatrix[0] ^ workMatrix[j-4][0];
+    //             workMatrix[j][1] = tempMatrix[1] ^ workMatrix[j-4][1];
+    //             workMatrix[j][2] = tempMatrix[2] ^ workMatrix[j-4][2];
+    //             workMatrix[j][3] = tempMatrix[3] ^ workMatrix[j-4][3];
+    //         }
+    //     }
+
+    //     return workMatrix;
+    // }
 
     public static int[] str2hex(String str){
         int[] hex = new int[str.length() / 2];
@@ -294,5 +347,14 @@ public class AESCipher {
         };
 
         return rConstants[round];
+    }
+
+    public static void printHex(int[][] hexMat){
+        for(int i=0;i<hexMat.length;i++){
+            for (int j=0;j<hexMat[0].length;j++){
+                System.out.print(String.format("%X ", hexMat[i][j]));
+            }
+            System.out.println("");
+        }
     }
 }

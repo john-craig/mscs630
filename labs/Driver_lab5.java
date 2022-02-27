@@ -1,4 +1,5 @@
 import java.util.Arrays;
+import java.util.Scanner;
 /**
 * file:     Driver_lab5.java
 * author:   John Craig
@@ -22,20 +23,21 @@ public class Driver_lab5 {
 
     /*  */
     public static void main(String args[]) {
-        // Scanner s = new Scanner(System.in);
-        // String sysKey = s.next();
-        // String plaintText = s.next();
+        //Scanner s = new Scanner(System.in);
+        //String sysKey = s.next();
+        //String plaintText = s.next();
+        String sysKey = "5468617473206D79204B756E67204675";
+        String plaintText = "54776F204F6E65204E696E652054776F";
 
-        // AESCipher cipher = new AESCipher();
+        AESCipher cipher = new AESCipher();
 
-        // int[] keyHex = cipher.str2hex(sysKey);
-        // int[] pTextHex = cipher.str2hex(plaintText);
+        int[] keyHex = cipher.str2hex(sysKey);
+        int[] pTextHex = cipher.str2hex(plaintText);
 
-        // int[] cTextHex = cipher.AES(keyHex, pTextHex);
-        // String cText = cipher.hex2str(cTextHex);
+        int[] cTextHex = cipher.AES(keyHex, pTextHex);
+        String cText = cipher.hex2str(cTextHex);
 
-        // System.out.println(cText);
-        runTests();
+        System.out.println(cText);
     }
 
     public static void runTests(){

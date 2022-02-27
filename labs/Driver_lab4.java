@@ -25,12 +25,11 @@ public class Driver_lab4 {
     static final int MAX_PLAINTEXT_LENGTH = 16;
     static final int MATRIX_SIZE = 4;
 
-    /* Main method of the program; accepts lines of text as input and prints
-       each line with the characters converted to integers */
+    /* */
     public static void main(String args[]) {
-        //Scanner s = new Scanner(System.in);
-        //String sysKey = s.next();
-        String sysKey = "5468617473206D79204B756E67204675";
+        Scanner s = new Scanner(System.in);
+        String sysKey = s.next();
+        //String sysKey = "5468617473206D79204B756E67204675";
 
         AESCipher cipher = new AESCipher();
         String[] roundKeys = cipher.aesRounderKeys(sysKey);
