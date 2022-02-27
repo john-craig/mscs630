@@ -59,6 +59,7 @@ public class Driver_lab5 {
         int[][] shiftRows = cipher.AESNibbleSub(nibSub);
 
         int[][] mixCol = cipher.AESShiftRow(shiftRows);
+        //printHex(mixCol);
 
         int[][] last = cipher.AESMixColumn(mixCol);
         printHex(last);

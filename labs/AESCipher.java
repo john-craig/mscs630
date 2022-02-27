@@ -45,22 +45,26 @@ public class AESCipher {
 
     public static int[][] AESMixColumn(int[][] inStateHex){
         int[][] outStateHex = new int[4][4];
-        int[][] workMatrix = new int[2][4];
+        byte[][] workMatrix = new byte[2][4];
 
         for(int i=0;i<inStateHex.length;i++){
-            char c;
+            byte c, d;
     
             for (int j = 0; j < 4; j++) {
-                workMatrix[0][j] = inStateHex[i][j];
-                c = (char)((inStateHex[0][j] >> 7) & 1);
-                workMatrix[1][j] = inStateHex[i][j] << 1;
+                d = (byte)inStateHex[j][i];
+
+                workMatrix[0][j] = d;
+                
+                c = (byte)((byte)(d >> 7) & 1);
+                
+                workMatrix[1][j] = (byte)(d << 1);
                 workMatrix[1][j] ^= c * 0x1B;
             }
 
-            outStateHex[i][0] = workMatrix[1][0] ^ workMatrix[0][3] ^ workMatrix[0][2] ^ workMatrix[1][1] ^ workMatrix[0][1];
-            outStateHex[i][1] = workMatrix[1][1] ^ workMatrix[0][0] ^ workMatrix[0][3] ^ workMatrix[1][2] ^ workMatrix[0][2];
-            outStateHex[i][2] = workMatrix[1][2] ^ workMatrix[0][1] ^ workMatrix[0][0] ^ workMatrix[1][3] ^ workMatrix[0][3];
-            outStateHex[i][3] = workMatrix[1][3] ^ workMatrix[0][2] ^ workMatrix[0][1] ^ workMatrix[1][0] ^ workMatrix[0][0];
+            outStateHex[0][i] = Byte.toUnsignedInt((byte)(workMatrix[1][0] ^ (byte)(workMatrix[0][3] ^ (byte)(workMatrix[0][2] ^ (byte)(workMatrix[1][1] ^ workMatrix[0][1])))));
+            outStateHex[1][i] = Byte.toUnsignedInt((byte)(workMatrix[1][1] ^ (byte)(workMatrix[0][0] ^ (byte)(workMatrix[0][3] ^ (byte)(workMatrix[1][2] ^ workMatrix[0][2])))));
+            outStateHex[2][i] = Byte.toUnsignedInt((byte)(workMatrix[1][2] ^ (byte)(workMatrix[0][1] ^ (byte)(workMatrix[0][0] ^ (byte)(workMatrix[1][3] ^ workMatrix[0][3])))));
+            outStateHex[3][i] = Byte.toUnsignedInt((byte)(workMatrix[1][3] ^ (byte)(workMatrix[0][2] ^ (byte)(workMatrix[0][1] ^ (byte)(workMatrix[1][0] ^ workMatrix[0][0])))));
         }
 
         return outStateHex;
