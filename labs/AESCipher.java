@@ -88,10 +88,6 @@ public class AESCipher {
         int round = 1;
         int[][] roundKeyMatrix = AESGetRoundKey(AESRoundKeys, round);
 
-        // printHex(roundKeyMatrix);
-        // System.out.println("---");
-        printHex(AESRoundKeys);
-
         //First round
         cTextMatrix = AESStateXOR(cTextMatrix, roundKeyMatrix);
 
@@ -102,8 +98,6 @@ public class AESCipher {
             cTextMatrix = AESMixColumn(cTextMatrix);
 
             roundKeyMatrix = AESGetRoundKey(AESRoundKeys, round);
-            // printHex(roundKeyMatrix);
-            // System.out.println("---");
             cTextMatrix = AESStateXOR(cTextMatrix, roundKeyMatrix);
         }
 
@@ -217,52 +211,6 @@ public class AESCipher {
         return workMatrix;
     }
 
-    // public static int[][] AESRoundKeysMatrix(int[][] keyMatrix){
-    //     int[][] workMatrix = new int[44][4];
-
-    //     //Round zero
-    //     for(int k=0;k<4;k++){
-    //         workMatrix[k][0] = keyMatrix[k][0];
-    //         workMatrix[k][1] = keyMatrix[k][1];
-    //         workMatrix[k][2] = keyMatrix[k][2];
-    //         workMatrix[k][3] = keyMatrix[k][3];
-    //     }
-
-    //     int[] tempMatrix = new int[4];
-    //     int round;
-
-    //     //Remaining rounds
-    //     for(int j=4;j<44;j++){
-    //         if(j % 4 != 0){
-    //             workMatrix[j][0] = workMatrix[j-4][0] ^ workMatrix[j-1][0];
-    //             workMatrix[j][1] = workMatrix[j-4][1] ^ workMatrix[j-1][1];
-    //             workMatrix[j][2] = workMatrix[j-4][2] ^ workMatrix[j-1][2];
-    //             workMatrix[j][3] = workMatrix[j-4][3] ^ workMatrix[j-1][3];
-    //         } else {
-    //             round = j / 4;
-
-    //             //Shift previous matrix column by one
-    //             tempMatrix[0] = workMatrix[j-1][1];
-    //             tempMatrix[1] = workMatrix[j-1][2];
-    //             tempMatrix[2] = workMatrix[j-1][3];
-    //             tempMatrix[3] = workMatrix[j-1][0];
-
-    //             //Apply sBox transformation and round constant modulation
-    //             tempMatrix[0] = aesBox(tempMatrix[0]) ^ aesRcon(round);
-    //             tempMatrix[1] = aesBox(tempMatrix[1]); //^ aesRcon(round);
-    //             tempMatrix[2] = aesBox(tempMatrix[2]); //^ aesRcon(round);
-    //             tempMatrix[3] = aesBox(tempMatrix[3]); //^ aesRcon(round);
-
-    //             workMatrix[j][0] = tempMatrix[0] ^ workMatrix[j-4][0];
-    //             workMatrix[j][1] = tempMatrix[1] ^ workMatrix[j-4][1];
-    //             workMatrix[j][2] = tempMatrix[2] ^ workMatrix[j-4][2];
-    //             workMatrix[j][3] = tempMatrix[3] ^ workMatrix[j-4][3];
-    //         }
-    //     }
-
-    //     return workMatrix;
-    // }
-
     public static int[] str2hex(String str){
         int[] hex = new int[str.length() / 2];
 
@@ -293,7 +241,7 @@ public class AESCipher {
         String str = "";
 
         for(int i=0;i<hex.length;i++){
-            str += String.format("%X", hex[i]);
+            str += String.format("%02X", hex[i]);
         }
 
         return str;

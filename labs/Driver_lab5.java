@@ -23,48 +23,57 @@ public class Driver_lab5 {
 
     /*  */
     public static void main(String args[]) {
-        //Scanner s = new Scanner(System.in);
-        //String sysKey = s.next();
-        //String plaintText = s.next();
-        String sysKey = "5468617473206D79204B756E67204675";
-        String plaintText = "54776F204F6E65204E696E652054776F";
+        if(args.length == 1){
+            runTests();
+        } else {
+            Scanner s = new Scanner(System.in);
+            String sysKey = s.next();
+            String plaintText = s.next();
 
-        AESCipher cipher = new AESCipher();
+            AESCipher cipher = new AESCipher();
 
-        int[] keyHex = cipher.str2hex(sysKey);
-        int[] pTextHex = cipher.str2hex(plaintText);
+            int[] keyHex = cipher.str2hex(sysKey);
+            int[] pTextHex = cipher.str2hex(plaintText);
 
-        int[] cTextHex = cipher.AES(keyHex, pTextHex);
-        String cText = cipher.hex2str(cTextHex);
+            int[] cTextHex = cipher.AES(keyHex, pTextHex);
+            String cText = cipher.hex2str(cTextHex);
 
-        System.out.println(cText);
+            System.out.println(cText);
+        }
     }
 
     public static void runTests(){
         AESCipher cipher = new AESCipher();
-
-        int[][] addKey1 = {
-            {0x54, 0x4F, 0x4E, 0x20},
-            {0x77, 0x6E, 0x69, 0x54},
-            {0x6F, 0x65, 0x6E, 0x77},
-            {0x20, 0x20, 0x65, 0x6F}
+        String[] sysKeys = {
+            "E8E9EAEBEDEEEFF0F2F3F4F5F7F8F9FA"
         };
-        int[][] addKey2 = {
-            {0x54, 0x73, 0x20, 0x67},
-            {0x68, 0x20, 0x4B, 0x20},
-            {0x61, 0x6D, 0x75, 0x46},
-            {0x74, 0x79, 0x6E, 0x75}
+        String[] plainTexts = {
+            "014BAF2278A69D331D5180103643E99A"
+        };
+        String[] cipherTexts = {
+            "6743C3D1519AB4F2CD9A78AB09A511BD"
         };
 
-        int[][] nibSub = cipher.AESStateXOR(addKey1, addKey2);
-        
-        int[][] shiftRows = cipher.AESNibbleSub(nibSub);
+        for(int i=0;i<sysKeys.length;i++){
+            int[] keyHex = cipher.str2hex(sysKeys[i]);
+            int[] pTextHex = cipher.str2hex(plainTexts[i]);
+            
+            System.out.println(String.format("---Test #%d---", i+1));
+            System.out.println("Key:                    " + sysKeys[i]);
+            System.out.println("Plaintext:              " + plainTexts[i]);
 
-        int[][] mixCol = cipher.AESShiftRow(shiftRows);
-        //printHex(mixCol);
+            int[] cTextHex = cipher.AES(keyHex, pTextHex);
+            String cText = cipher.hex2str(cTextHex);
 
-        int[][] last = cipher.AESMixColumn(mixCol);
-        printHex(last);
+            System.out.println("Expected Ciphertext:    " + cipherTexts[i]);
+            System.out.println("Actual Ciphertext:      " + cText);
+
+            if(cText.equals(cipherTexts[i])){
+                System.out.println("Test Result:            Pass");
+            } else {
+                System.out.println("Test Result:            Fail");
+            }
+        }
 
     }
 
