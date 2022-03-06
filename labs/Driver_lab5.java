@@ -8,7 +8,7 @@ import java.util.Scanner;
 * due date: February 20, 2022
 * version: 1.0
 *
-* This file contains the source code for the first
+* This file contains the source code for the fifth
 * lab assignment.
 */
 
@@ -21,7 +21,8 @@ public class Driver_lab5 {
     static final int MAX_PLAINTEXT_LENGTH = 16;
     static final int MATRIX_SIZE = 4;
 
-    /*  */
+    /* Main method; reads in the system key and plaintext from stdin, prints ciphertext */
+    /* If any command line argument are passed it runs test cases instead */
     public static void main(String args[]) {
         if(args.length == 1){
             runTests();
@@ -42,6 +43,7 @@ public class Driver_lab5 {
         }
     }
 
+    /* Run unit tests for the AES Cipher encryption */
     public static void runTests(){
         AESCipher cipher = new AESCipher();
         String[] sysKeys = {
@@ -89,6 +91,7 @@ public class Driver_lab5 {
 
     }
 
+    /*Utility method to print out hex matrices */
     public static void printHex(int[][] hexMat){
         for(int i=0;i<hexMat.length;i++){
             for (int j=0;j<hexMat[0].length;j++){

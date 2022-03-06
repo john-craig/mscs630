@@ -9,7 +9,7 @@ import java.util.Scanner;
 * due date: February 20, 2022
 * version: 1.0
 *
-* This file contains the source code for the first
+* This file contains the source code for the fourth
 * lab assignment.
 */
 
@@ -18,14 +18,12 @@ import java.util.Scanner;
 *
 */
 
-//5468617473206D79204B756E67204675
-
 public class Driver_lab4 {
     //Declare constants for input
     static final int MAX_PLAINTEXT_LENGTH = 16;
     static final int MATRIX_SIZE = 4;
 
-    /* */
+    /* Reads a system key from stdin and prints out the rounds keys for it */
     public static void main(String args[]) {
         Scanner s = new Scanner(System.in);
         String sysKey = s.next();
