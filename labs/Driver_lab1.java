@@ -4,7 +4,7 @@
 * course:   MSCS 630
 * assignment: Lab 1
 * due date: January 23, 2022
-* verison: 1.0
+* version: 1.0
 *
 * This file contains the source code for the first
 * lab assignment.

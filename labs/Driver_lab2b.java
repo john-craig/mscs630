@@ -1,5 +1,5 @@
 /**
-* file:     Driver_lab2.java
+* file:     Driver_lab2b.java
 * author:   John Craig
 * course:   MSCS 630
 * assignment: Lab 2
@@ -35,7 +35,7 @@ public class Driver_lab2b {
     public static void printResults(String lines[]){
         //Declare working variables
         long[] digits;
-        long denominator = "";
+        long[] results;
 
         //Iterate over lines
         for(int i=0;i<lines.length;i++){
@@ -46,9 +46,7 @@ public class Driver_lab2b {
 
             //Print output
             System.out.println(
-                results[0].toString() + " "
-                results[1].toString() + " "
-                results[2].toString()
+                String.format("%d %d %d", results[0], results[1], results[2])
             );
         }
     }
@@ -56,29 +54,29 @@ public class Driver_lab2b {
 
     /* Returns an array of two longs parsed from a string containing
        space-separated integers */
-    public static long[] parseLine(line) throws IllegalArgumentException {
-        String splitLine = line.split(' ');
-        long[] digits;
+    public static long[] parseLine(String line) throws IllegalArgumentException {
+        String[] splitLine = line.split(" ");
+        long[] digits = {};
 
         try {
-            if(splitLines.length != MAX_NUMBERS){
+            if(splitLine.length != MAX_NUMBERS){
                 throw new IllegalArgumentException("Each line must contain exactly two numbers.");
             } else {
-                digits = new int[2];
+                digits = new long[2];
                 
                 digits[0] = Long.parseLong(splitLine[0]);
                 digits[1] = Long.parseLong(splitLine[1]);
             }
         } catch (IllegalArgumentException e){
             System.exit(0);
-        } catch (NumberFormatException e){
-            System.exit(0);
-        }
+        } 
+
+        return digits;
     }
 
     /* Returns the greatest common denominator and the coefficients
        necessary to produce this denominator from two digits */
-    public static long[] eudclidAlgExt(long a, long b){
+    public static long[] euclidAlgExt(long a, long b){
         long[] results = new long[3];
 
         if(b == 0){
