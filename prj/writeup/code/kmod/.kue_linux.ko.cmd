@@ -1,0 +1,1 @@
+cmd_/home/abramelin/programming/by_language/c/rubberhose/src/kmod/kue_linux.ko := ld -r -m elf_x86_64 --build-id=sha1  -T scripts/module.lds -o /home/abramelin/programming/by_language/c/rubberhose/src/kmod/kue_linux.ko /home/abramelin/programming/by_language/c/rubberhose/src/kmod/kue_linux.o /home/abramelin/programming/by_language/c/rubberhose/src/kmod/kue_linux.mod.o;  true

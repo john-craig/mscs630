@@ -1,0 +1,1 @@
+cmd_/home/abramelin/programming/by_language/c/rubberhose/src/kmod/maru_linux.mod := { echo  /home/abramelin/programming/by_language/c/rubberhose/src/kmod/maru_linux.o;  echo; } > /home/abramelin/programming/by_language/c/rubberhose/src/kmod/maru_linux.mod
